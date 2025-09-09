@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Base64 Link Shortener</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      text-align: center;
+      padding: 40px;
+    }
+    h2 { color: #58a6ff; }
+    input, textarea {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+      background: #161b22;
+      color: #e6edf3;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #238636;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover { background: #2ea043; }
+    .box {
+      margin: 20px auto;
+      padding: 20px;
+      background: #161b22;
+      border-radius: 12px;
+      max-width: 600px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+    textarea { resize: none; }
+  </style>
+</head>
+<body>
+
+  <h2>🔗 Base64 Link Shortener</h2>
+  <div class="box">
+    <p><b>Masukkan Link Asli:</b></p>
+    <input type="text" id="originalLink" placeholder="https://example.com/video.mp4">
+    <button onclick="generateLink()">Buat Link Pendek</button>
+
+    <p><b>Hasil Link Pendek:</b></p>
+    <textarea id="shortLink" readonly rows="2"></textarea>
+    <br>
+    <button onclick="copyLink()">Salin Link</button>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const base64Url = params.get("u");
+
+    if (base64Url) {
+      try {
+        const decodedUrl = atob(base64Url.trim());
+        window.location.href = decodedUrl;
+      } catch (e) {
+        document.body.innerHTML = "<h3 style='color:red;text-align:center;'>❌ Link Base64 tidak valid</h3>";
+      }
+    }
+
+    function generateLink() {
+      const input = document.getElementById("originalLink").value.trim();
+      if (!input) {
+        alert("Isi link asli dulu!");
+        return;
+      }
+      const encoded = btoa(input);
+      const shortUrl = window.location.origin + window.location.pathname + "?u=" + encoded;
+      document.getElementById("shortLink").value = shortUrl;
+    }
+    
+    function copyLink() {
+      const text = document.getElementById("shortLink");
+      text.select();
+      document.execCommand("copy");
+      alert("Link pendek disalin!");
+    }
+  </script>
+
+</body>
+</html>
